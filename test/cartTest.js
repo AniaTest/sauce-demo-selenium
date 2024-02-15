@@ -1,9 +1,9 @@
-const { before, beforeEach, after } = require('mocha');
-const { LoginPage } = require('../page_models/loginPage');
-const { ProductPage } = require('../page_models/productPage');
-const { Builder, ThenableWebDriver, until } = require('selenium-webdriver');
-const { assert } = require('chai');
-const { CartPage } = require('../page_models/cartPage');
+import { before, beforeEach, after } from "mocha";
+import { Builder, ThenableWebDriver, until } from "selenium-webdriver";
+import { assert } from "chai";
+import { LoginPage } from "../page_models/loginPage.js";
+import { ProductPage } from "../page_models/productPage.js";
+import { CartPage } from "../page_models/cartPage.js";
 
 const STANDARD_USER_LOGIN = 'standard_user';
 const CORRECT_PASSWORD = 'secret_sauce';
@@ -35,6 +35,7 @@ describe('Cart page scenarios', function(){
         await loginPage.setUsername(STANDARD_USER_LOGIN);
         await loginPage.setPassword(CORRECT_PASSWORD);
         await loginPage.clickLoginButton();
+
         
         cartPage = new CartPage(driver);
     });

@@ -1,13 +1,6 @@
-const { By, Select, until, ThenableWebDriver, Actions, Key } = require('selenium-webdriver');
-const actions = require('wd/lib/actions');
-const { keys } = require('wd/lib/commands');
-const elementCommands = require('wd/lib/element-commands');
-const { doubleClick } = require('wd/lib/element-commands');
-// import { By, Select, until } from 'selenium-webdriver';
+import { By, ThenableWebDriver } from "selenium-webdriver";
 
-
-
-class LoginPage {
+export class LoginPage {
 
     constructor(driver) {
         /**
@@ -15,67 +8,95 @@ class LoginPage {
          */
         this.driver = driver;
     }
-    
-    async getUrl() {
-       return this.driver.getCurrentUrl();
+
+    // Elements
+    el_productsPageTitle() {
+        return this.driver.findElement(By.css(".title"));
     }
 
-    //funkcja z uzyciem explicit wait 
+    el_usernameInput() {
+        return this.driver.findElement(By.id("user-name"));
+    }
+    
+    el_usernameInput() {
+        return this.driver.findElement(By.id("user-name"));
+    }
+
+    el_passwordInput() {
+        return this.driver.findElement(By.id("password"));
+    }
+
+    el_loginButton() {
+        return this.driver.findElement(By.id("login-button"));
+    }
+
+    el_LockedOutUserError() {
+        return this.driver.findElement(By.className("error-message-container"));
+    }
+
+    el_closeErrorButton() {
+        return this.driver.findElement(By.className("error-button"));
+    }
+    
+    // Methods
+    async getUrl() {
+        return this.driver.getCurrentUrl();
+    }
+
+    //function with explicit wait 
     /*async getProductsPageTitle() {
         const productsPageTitle = this.driver.findElement(By.css(".title"));
         this.driver.wait(until.elementIsVisible(productsPageTitle,2000));
         return productsPageTitle.getText();
     }*/
     
-    //funkcja z uzyciem explicit wait z custom condition
+    //function with explicit wait with custom condition 
     async getProductsPageTitle() {
-        const productsPageTitle = this.driver.findElement(By.css(".title"));
         
+        const productsPageTitle = await this.el_productsPageTitle();
         this.driver.wait(function() {
-            return productsPageTitle.isDisplayed
+            return productsPageTitle.isDisplayed();
         }, 3000);
         
         return productsPageTitle.getText();
     }
 
     async setUsername(user) {
-        const usernameInput = await this.driver.findElement(By.id("user-name"));
+        const usernameInput = await this.el_usernameInput();
         
         return usernameInput.sendKeys(user);
     }
 
     async clearUsernameInput() {
-        const usernameInput = await this.driver.findElement(By.id("user-name"));
+        const usernameInput = await this.el_usernameInput();
         
         return usernameInput.clear();
     }
 
     async setPassword(password) {
-        const passwordInput = await this.driver.findElement(By.id("password"));
+        const passwordInput = await this.el_passwordInput();
         
         return passwordInput.sendKeys(password);
     }
-    
+
     async clearPasswordInput() {
-        const passwordInput = await this.driver.findElement(By.id("password"));
+        const passwordInput = await this.el_passwordInput();
         
         return passwordInput.clear();
     }
 
     async clickLoginButton() {
-        
-        return this.driver.findElement(By.id("login-button")).click();
+        const loginButton = await this.el_loginButton();
+        return loginButton.click();
     }
     
     async getLockedOutUserError() {
-        
-        return this.driver.findElement(By.className("error-message-container")).getText();
+        const lockedOutUserError = await this.el_LockedOutUserError();
+        return lockedOutUserError.getText();
     }
     
     async clickCloseErrorButton() {
-        
-        return this.driver.findElement(By.className("error-button")).click();
+        const closeErrorButton = await this.el_closeErrorButton();
+        return closeErrorButton.click();
     }
 }
-
-module.exports = { LoginPage }

@@ -1,16 +1,11 @@
-const { before, beforeEach, after } = require('mocha');
-const { Builder, ThenableWebDriver, until } = require('selenium-webdriver');
-const expect = require('chai').expect;
-const { LoginPage } = require('../page_models/loginPage');
-const { assert } = require('chai');
-const { waitFor } = require('wd/lib/commands');
-const { elementIsVisible } = require('selenium-webdriver/lib/until');
-
-const STANDARD_USER_LOGIN = 'standard_user';
-const lockedOutUserLogin = 'locked_out_user';
-const CORRECT_PASSWORD = 'secret_sauce';
-const loginErrorMessage = "Epic sadface: Username and password do not match any user in this service";
-const urlAfterLogin = "https://www.saucedemo.com/inventory.html";
+import { before, beforeEach, after } from "mocha";
+import { Builder, ThenableWebDriver } from "selenium-webdriver";
+import { assert } from "chai";
+import { LoginPage } from "../page_models/loginPage.js";
+import { STANDARD_USER_LOGIN, CORRECT_PASSWORD } from "./constants.js";
+const LOCKED_OUT_USER_LOGIN = 'locked_out_user';
+const LOGIN_ERROR_MESSAGE = "Epic sadface: Username and password do not match any user in this service";
+const URL_AFTER_LOGIN = "https://www.saucedemo.com/inventory.html";
 
 describe('login to the app', function() {
 
@@ -26,13 +21,12 @@ describe('login to the app', function() {
 
     before(async function() {
         driver = await new Builder().forBrowser('chrome').build();
-        // uncomment when you want to use an implicit wait for this driver session
-        //await driver.manage().setTimeouts({ implicit: 1000 }); 
+
     });
  
     beforeEach(async function() {
         //setup
-        await driver.get('https://www.saucedemo.com/');
+        await driver.get("https://www.saucedemo.com/");
 
         loginPage = new LoginPage(driver);
     
@@ -49,12 +43,12 @@ describe('login to the app', function() {
             await loginPage.setPassword(CORRECT_PASSWORD);
             await loginPage.clickLoginButton();
             const url = await loginPage.getUrl();
-            
-            assert.equal(url,urlAfterLogin);
+
+            assert.equal(url, URL_AFTER_LOGIN);
         });
-        
+
         it('try to login locked out user', async function() {
-            await loginPage.setUsername(lockedOutUserLogin);
+            await loginPage.setUsername(LOCKED_OUT_USER_LOGIN);
             await loginPage.setPassword(CORRECT_PASSWORD);
             await loginPage.clickLoginButton();
             const errorMessage = await loginPage.getLockedOutUserError()
@@ -68,7 +62,7 @@ describe('login to the app', function() {
             await loginPage.clickLoginButton();
             const errorMessage = await loginPage.getLockedOutUserError()
             
-            assert.equal(errorMessage,loginErrorMessage);
+            assert.equal(errorMessage, LOGIN_ERROR_MESSAGE);
         });
 
         it('try to login with incorrect username', async function() {
@@ -77,7 +71,7 @@ describe('login to the app', function() {
             await loginPage.clickLoginButton();
             const errorMessage = await loginPage.getLockedOutUserError()
             
-            assert.equal(errorMessage,loginErrorMessage);
+            assert.equal(errorMessage, LOGIN_ERROR_MESSAGE);
         });
 
         it('try to login with incorrect password, dismiss error and login correctly', async function() {

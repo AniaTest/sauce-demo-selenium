@@ -1,11 +1,6 @@
-const { By, Select, until, ThenableWebDriver, Actions, Key } = require('selenium-webdriver');
-const actions = require('wd/lib/actions');
-const { keys, element } = require('wd/lib/commands');
-const elementCommands = require('wd/lib/element-commands');
+import { By, Select, until, ThenableWebDriver } from "selenium-webdriver";
 
-
-
-class ProductPage {
+export class ProductPage {
 
     constructor(driver) {
         /**
@@ -14,36 +9,69 @@ class ProductPage {
         this.driver = driver;
     }
     
-    async getUrl() {
-       return this.driver.getCurrentUrl();
-    } 
+    // Elements
+    el_productSortSelect() {
+        return this.driver.findElement(By.className("product_sort_container"));
+    }
+
+    el_productNames() {
+        return this.driver.findElements(By.className("inventory_item_name "));
+    }
+
+    el_productPrices() {
+        return this.driver.findElements(By.className("inventory_item_price"));
+    }
+
+    el_addButtons() {
+        return this.driver.findElements(By.className("btn_inventory"));
+    }
+
+    el_shoppingCartBadge() { 
+       return this.driver.findElement(By.className("shopping_cart_badge"));
+    }
+
+     el_shoppingCartBadgeElements() { 
+       return this.driver.findElements(By.className("shopping_cart_badge"));
+    }
+
+    el_menuButton() {
+        return this.driver.findElement(By.id("react-burger-menu-btn"));
+    }
+
+    el_closeMenuButton() {
+        return this.driver.findElement(By.className("bm-cross-button"));
+    }
+
+    el_menuDrawer() {
+        return this.driver.findElement(By.css(".bm-menu-wrap"));
+
+    }
+
+    // Methods 
+    async selectSortOption(sortOption) {
+        const productSortSelect = await this.el_productSortSelect();
+        const select = new Select(productSortSelect);
+        await select.selectByValue(sortOption);
+    }
 
     async selectSortOptionAZ() {
-        const selectProductSort = await this.driver.findElement(By.className("product_sort_container"));
-        const select = new Select(selectProductSort);
-        await select.selectByValue("az");
+        await this.selectSortOption("az");
     }
 
     async selectSortOptionZA() {
-        const selectProductSort = await this.driver.findElement(By.className("product_sort_container"));
-        const select = new Select(selectProductSort);
-        await select.selectByValue("za");
+        await this.selectSortOption("za");
     }
 
     async selectSortOptionPriceAsc() {
-        const selectProductSort = await this.driver.findElement(By.className("product_sort_container"));
-        const select = new Select(selectProductSort);
-        await select.selectByValue("lohi");
+        await this.selectSortOption("lohi");
     }
 
     async selectSortOptionPriceDsc() {
-        const selectProductSort = await this.driver.findElement(By.className("product_sort_container"));
-        const select = new Select(selectProductSort);
-        await select.selectByValue("hilo");
+        await this.selectSortOption("hilo");
     }
 
     async getProductNames() {        
-        const productNames = await this.driver.findElements(By.className("inventory_item_name "));
+        const productNames = await this.el_productNames();
 
         const productNameTexts = [];
         for(let i = 0; i < productNames.length; i++)
@@ -55,7 +83,7 @@ class ProductPage {
     }
 
     async getProductPrices() {
-        const productPricesElements = await this.driver.findElements(By.className("inventory_item_price"));
+        const productPricesElements = await this.el_productPrices()
 
         const priceStrings = [];
         for(let i = 0; i < productPricesElements.length; i++)
@@ -78,40 +106,36 @@ class ProductPage {
 
     async clickAddButton(index) {
         //look for addbutton for all products
-        const addButtons = await this.driver.findElements(By.className("btn_inventory"));
+        const addButtons = await this.el_addButtons();
 
         return addButtons[index].click();
     }
 
-    async getShoppingCartBadge() { 
-       
-        return this.driver.findElement(By.className("shopping_cart_badge"));
+    async getCartBadgeExist() { 
+        const shoppingCartBadgeElements = await this.el_shoppingCartBadgeElements();
+
+        return !!shoppingCartBadgeElements.length ;
     }
 
-    async getCartBadgeExist() { 
-        
-        return this.driver.findElements(By.className("shopping_cart_badge"))
-                          .then(found => !!found.length);
-     }
-
     async getShoppingCartBadgeNumber() {
+        const shoppingCartBadge = await this.el_shoppingCartBadge();
         
-        return this.driver.findElement(By.className("shopping_cart_badge")).getText();
+        return shoppingCartBadge.getText();
     }
 
     async clickOnMenuButton() {
-    
-        return this.driver.findElement(By.id("react-burger-menu-btn")).click();
+        const menuButton = await this.el_menuButton();
+        return menuButton.click();
     }
 
     async clickCloseMenuButton() {
-        const closeMenuButton = this.driver.findElement(By.className("bm-cross-button"));
+        const closeMenuButton = await this.el_closeMenuButton();
         await this.driver.wait(until.elementIsVisible(closeMenuButton), 2000);
 
         return closeMenuButton.click()
     }
     async getMenuWrapperState() {
-        const menuStateHidden = await this.driver.findElement(By.css(".bm-menu-wrap")).getAttribute("aria-hidden");
+        const menuStateHidden = await this.el_menuDrawer().getAttribute("aria-hidden");
         
         if(menuStateHidden == "true") {
             return true;
@@ -125,6 +149,3 @@ class ProductPage {
 
 
 }
-
-
-module.exports = { ProductPage }

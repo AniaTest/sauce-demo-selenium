@@ -1,11 +1,6 @@
-const { By, Select, until, ThenableWebDriver, Actions, Key } = require('selenium-webdriver');
-const actions = require('wd/lib/actions');
-const { keys, element } = require('wd/lib/commands');
-const elementCommands = require('wd/lib/element-commands');
+import { By, Select, ThenableWebDriver } from "selenium-webdriver";
 
-
-
-class CartPage {
+export class CartPage {
 
     constructor(driver) {
         /**
@@ -28,5 +23,3 @@ class CartPage {
 
 }
 
-
-module.exports = { CartPage }
