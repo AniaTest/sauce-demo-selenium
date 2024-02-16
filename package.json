@@ -1,12 +1,12 @@
 {
-  "name": "sauce-demo",
+  "name": "sauce-demo-tests",
   "version": "1.0.0",
   "type": "module",
   "description": "",
   "scripts": {
     "test": "mocha"
   },
-  "author": "",
+  "author": "Anna Górska",
   "license": "ISC",
   "dependencies": {
     "selenium-webdriver": "^4.7.0"
