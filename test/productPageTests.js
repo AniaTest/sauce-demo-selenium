@@ -94,18 +94,21 @@ describe('Product page scenarios', function(){
     describe('adding products to a cart ', function() {
 
         it('add product to a cart and check if the add button changes to remove', async function() {
-            const addbutton = await productPage.getAddButtonText(3);
-            await productPage.clickAddButton(3);
+            const productTitle = "Sauce Labs Bike Light";
 
+            let buttonText = await productPage.getAddRemoveButtonText(productTitle);
+            assert.equal("Add to cart", buttonText);
+
+            await productPage.addProductByTitle(productTitle);
             //check if button text changed to remove
-            const removeButton = await productPage.getAddButtonText(3);
-            
-            assert.notEqual(addbutton, removeButton);
+            buttonText = await productPage.getAddRemoveButtonText(productTitle);
+            assert.equal("Remove", buttonText);
 
             //check if button text changed to add
-            await productPage.clickAddButton(3);
-
-            assert.notEqual(addbutton, removeButton);
+            await productPage.addProductByTitle(productTitle);
+            
+            buttonText = await productPage.getAddRemoveButtonText(productTitle);
+            assert.equal("Add to cart", buttonText);
         });
 
         it('check if cart badge is diplayed and hidden when product added and removed', async function() {
@@ -132,17 +135,17 @@ describe('Product page scenarios', function(){
             await productPage.clickAddButton(1);
             const badgeText = await productPage.getShoppingCartBadgeNumber();
             
-            assert.equal(badgeText,"1");
+            assert.equal(badgeText, "1");
 
             await productPage.clickAddButton(2);
             const badgeTextAddOne = await productPage.getShoppingCartBadgeNumber();
 
-            assert.equal(badgeTextAddOne,"2");
+            assert.equal(badgeTextAddOne, "2");
 
             await productPage.clickAddButton(2);
             const badgeTextminusOne = await productPage.getShoppingCartBadgeNumber();
 
-            assert.equal(badgeTextminusOne,"1");
+            assert.equal(badgeTextminusOne, "1");
 
         });
     });

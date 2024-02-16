@@ -46,6 +46,9 @@ export class ProductPage {
         return this.driver.findElement(By.css(".bm-menu-wrap"));
 
     }
+    el_cartButton() {
+        return this.driver.findElement(By.className("shopping_cart_link"));
+    }
 
     // Methods 
     async selectSortOption(sortOption) {
@@ -97,11 +100,19 @@ export class ProductPage {
         return priceStrings;
     }
 
-    async getAddButtonText(index) {
-        //look for addbutton for all products
-        const addButton = await this.driver.findElements(By.className("btn_inventory"));
+    async getAddRemoveButtonText(productText) {
 
-        return addButton[index].getText();
+        const productNames = await this.el_productNames();
+
+        const productNameTexts = [];
+        for(let i = 0; i < productNames.length; i++)
+        {
+            productNameTexts.push( await productNames[i].getText() );
+        }
+        const indexOfProductName = productNameTexts.indexOf(productText);
+        const addButtons = await this.el_addButtons();
+        
+        return addButtons[indexOfProductName].getText();
     }
 
     async clickAddButton(index) {
@@ -144,8 +155,27 @@ export class ProductPage {
         }
     
     }
+    async clickCartButton() {
+        const cartButton = await this.el_cartButton();
 
+        return cartButton.click();
+    }
 
+    async addProductByTitle(productText) {
+        //sprawdzam index produktu
+        const productNames = await this.el_productNames();
+
+        const productNameTexts = [];
+        for(let i = 0; i < productNames.length; i++)
+        {
+            productNameTexts.push( await productNames[i].getText() );
+        }
+        const indexOfProductName = productNameTexts.indexOf(productText);
+        const addButtons = await this.el_addButtons();
+        
+        //ten index podaje do klikniecia buttona add
+        return  addButtons[indexOfProductName].click()
+    }
 
 
 }
