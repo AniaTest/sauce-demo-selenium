@@ -58,7 +58,7 @@ describe('Cart page scenarios', function(){
             assert.equal("https://www.saucedemo.com/inventory-item.html?id=0", productUrl)
         });
 
-        it.only('check if product listed in the cart can be removed', async function() {
+        it('check if product listed in the cart can be removed', async function() {
             await cartPage.clickRemoveButton();
             const itemNotFoundInCart = await cartPage.itemNotFoundInCart()
 
@@ -66,13 +66,5 @@ describe('Cart page scenarios', function(){
         });
 
     });
-
-    describe('removing products from a cart ', function() {
-
-        
-        
-    });
-
-
 
 });

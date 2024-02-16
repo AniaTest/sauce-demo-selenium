@@ -1,4 +1,4 @@
-import { By, Select, ThenableWebDriver } from "selenium-webdriver";
+import { By, ThenableWebDriver } from "selenium-webdriver";
 
 export class CartPage {
 
@@ -47,8 +47,6 @@ export class CartPage {
 
         return !!productListedInCart.length;
     }
-
-
 
 }
 
