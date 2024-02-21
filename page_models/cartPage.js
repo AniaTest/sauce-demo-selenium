@@ -2,17 +2,16 @@ import { By, ThenableWebDriver } from "selenium-webdriver";
 
 export class CartPage {
 
-
     constructor(driver) {
         /**
          * @type {ThenableWebDriver}
          */
         this.driver = driver;
     }
-    // Elements
 
+    // Elements
     el_linktoProductFromCart() {
-        //currently only for "Sauce Labs Bike Light"
+        // currently only for "Sauce Labs Bike Light"
         return this.driver.findElement(By.id("item_0_title_link"));
     }
 
@@ -27,7 +26,6 @@ export class CartPage {
     // Methods
     async clickProductLink() {
         const cartItemLink = await this.el_linktoProductFromCart();
-        //await driver.wait(until.elementIsVisible(cartItemLink), 3000);
 
         return cartItemLink.click();
     }
@@ -42,7 +40,7 @@ export class CartPage {
         return removeProductFromCartButton.click();
     }
 
-    async itemNotFoundInCart() {
+    async isItemNotFoundInCart() {
         const productListedInCart = await this.el_productListedInCart();
 
         return !!productListedInCart.length;

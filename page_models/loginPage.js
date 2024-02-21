@@ -43,14 +43,14 @@ export class LoginPage {
         return this.driver.getCurrentUrl();
     }
 
-    //function with explicit wait 
+    // function with explicit wait 
     /*async getProductsPageTitle() {
         const productsPageTitle = this.driver.findElement(By.css(".title"));
-        this.driver.wait(until.elementIsVisible(productsPageTitle,2000));
+        this.driver.wait(until.elementIsVisible(productsPageTitle, 2000));
         return productsPageTitle.getText();
     }*/
     
-    //function with explicit wait with custom condition 
+    // function with explicit wait with custom condition 
     async getProductsPageTitle() {
         
         const productsPageTitle = await this.el_productsPageTitle();
@@ -87,16 +87,19 @@ export class LoginPage {
 
     async clickLoginButton() {
         const loginButton = await this.el_loginButton();
+
         return loginButton.click();
     }
     
     async getLockedOutUserError() {
         const lockedOutUserError = await this.el_LockedOutUserError();
+
         return lockedOutUserError.getText();
     }
     
     async clickCloseErrorButton() {
         const closeErrorButton = await this.el_closeErrorButton();
+
         return closeErrorButton.click();
     }
 }

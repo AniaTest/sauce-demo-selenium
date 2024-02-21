@@ -3,11 +3,12 @@ import { Builder, ThenableWebDriver } from "selenium-webdriver";
 import { assert } from "chai";
 import { LoginPage } from "../page_models/loginPage.js";
 import { STANDARD_USER_LOGIN, CORRECT_PASSWORD } from "./constants.js";
-const LOCKED_OUT_USER_LOGIN = 'locked_out_user';
+
+const LOCKED_OUT_USER_LOGIN = "locked_out_user";
 const LOGIN_ERROR_MESSAGE = "Epic sadface: Username and password do not match any user in this service";
 const URL_AFTER_LOGIN = "https://www.saucedemo.com/inventory.html";
 
-describe('login to the app', function() {
+describe("login to the app", function() {
 
     this.timeout(5000);
     /**
@@ -20,12 +21,11 @@ describe('login to the app', function() {
     let loginPage;
 
     before(async function() {
-        driver = await new Builder().forBrowser('chrome').build();
-
+        driver = await new Builder().forBrowser("chrome").build();
     });
  
     beforeEach(async function() {
-        //setup
+        // setup
         await driver.get("https://www.saucedemo.com/");
 
         loginPage = new LoginPage(driver);
@@ -33,48 +33,47 @@ describe('login to the app', function() {
     });
 
     after(async function() {
-        //teardown
-        //await driver.quit();
+        await driver.quit();
     });
 
-    describe('login to the page', function() {
-        it('login with standard user', async function() {
+    describe("login to the page", function() {
+        it("logs in with standard user", async function() {
             await loginPage.setUsername(STANDARD_USER_LOGIN);
             await loginPage.setPassword(CORRECT_PASSWORD);
             await loginPage.clickLoginButton();
-            const url = await loginPage.getUrl();
 
+            const url = await loginPage.getUrl();
             assert.equal(url, URL_AFTER_LOGIN);
         });
 
-        it('try to login locked out user', async function() {
+        it("logs in locked out user", async function() {
             await loginPage.setUsername(LOCKED_OUT_USER_LOGIN);
             await loginPage.setPassword(CORRECT_PASSWORD);
             await loginPage.clickLoginButton();
+
             const errorMessage = await loginPage.getLockedOutUserError()
-            
-            assert.equal(errorMessage,"Epic sadface: Sorry, this user has been locked out.");
+            assert.equal(errorMessage, "Epic sadface: Sorry, this user has been locked out.");
         });
 
-        it('try to login with incorrect password', async function() {
+        it("dosn't log in with incorrect password", async function() {
             await loginPage.setUsername(STANDARD_USER_LOGIN);
             await loginPage.setPassword("jihioh");
             await loginPage.clickLoginButton();
+
             const errorMessage = await loginPage.getLockedOutUserError()
-            
             assert.equal(errorMessage, LOGIN_ERROR_MESSAGE);
         });
 
-        it('try to login with incorrect username', async function() {
+        it("doesn't log in with incorrect username", async function() {
             await loginPage.setUsername("hjdskhkjdsh");
             await loginPage.setPassword(CORRECT_PASSWORD);
             await loginPage.clickLoginButton();
+
             const errorMessage = await loginPage.getLockedOutUserError()
-            
             assert.equal(errorMessage, LOGIN_ERROR_MESSAGE);
         });
 
-        it('try to login with incorrect password, dismiss error and login correctly', async function() {
+        it("doesn't login with incorrect password, dismiss error and login correctly", async function() {
             await loginPage.setUsername(STANDARD_USER_LOGIN);
             await loginPage.setPassword("sdjcdscn");
             await loginPage.clickLoginButton();
@@ -90,10 +89,7 @@ describe('login to the app', function() {
             await loginPage.clickLoginButton();
 
             const productsPageTitle = await loginPage.getProductsPageTitle();
-            
             assert.equal(productsPageTitle, "Products");
         });
-
-
     });
 });
