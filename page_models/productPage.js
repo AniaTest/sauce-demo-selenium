@@ -51,26 +51,26 @@ export class ProductPage {
     }
 
     // Methods 
-    async selectSortOption(sortOption) {
+    async _selectSortOption(sortOption) {
         const productSortSelect = await this.el_productSortSelect();
         const select = new Select(productSortSelect);
         await select.selectByValue(sortOption);
     }
 
     async selectSortOptionAZ() {
-        await this.selectSortOption("az");
+        await this._selectSortOption("az");
     }
 
     async selectSortOptionZA() {
-        await this.selectSortOption("za");
+        await this._selectSortOption("za");
     }
 
     async selectSortOptionPriceAsc() {
-        await this.selectSortOption("lohi");
+        await this._selectSortOption("lohi");
     }
 
     async selectSortOptionPriceDsc() {
-        await this.selectSortOption("hilo");
+        await this._selectSortOption("hilo");
     }
 
     async getProductNames() {        
@@ -79,7 +79,7 @@ export class ProductPage {
         const productNameTexts = [];
         for(let i = 0; i < productNames.length; i++)
         {
-            productNameTexts.push( await productNames[i].getText() );
+            productNameTexts.push(await productNames[i].getText());
         }
 
         return productNameTexts;
@@ -101,7 +101,6 @@ export class ProductPage {
     }
 
     async getAddRemoveButtonText(productText) {
-
         const productNames = await this.el_productNames();
 
         const productNameTexts = [];
@@ -116,7 +115,7 @@ export class ProductPage {
     }
 
     async clickAddButton(index) {
-        //look for addbutton for all products
+        // look for addbutton for all products
         const addButtons = await this.el_addButtons();
 
         return addButtons[index].click();
@@ -145,16 +144,42 @@ export class ProductPage {
 
         return closeMenuButton.click()
     }
-    async getMenuWrapperState() {
-        const menuStateHidden = await this.el_menuDrawer().getAttribute("aria-hidden");
-        
-        if(menuStateHidden == "true") {
-            return true;
-        } else {
-            return false;
-        }
     
+    //checks if menu is opened by checking the position of menu bounds
+    async isMenuDisplayed() {
+        const menuDrawer = await this.el_menuDrawer();
+        
+        let displayed = false;
+        await this.driver.wait(async function menuDisplayed() {
+            const menuDrawerBound = await this.driver.executeScript("return arguments[0].getBoundingClientRect()", menuDrawer);
+            if(menuDrawerBound.width + menuDrawerBound.x === 300) {
+                displayed = true;
+                
+                return true;
+            }
+        }.bind(this), 3000);
+
+        return displayed;
     }
+
+    //checks if menu is closed by checking the position of menu bounds
+    async isMenuHidden() {
+        const menuDrawer = await this.el_menuDrawer();
+        
+        let hidden = false;
+        await this.driver.wait(async function menuHidden() {
+            const menuDrawerBound = await this.driver.executeScript("return arguments[0].getBoundingClientRect()", menuDrawer);
+            if(menuDrawerBound.width + menuDrawerBound.x === 0) {
+                hidden = true;
+                
+                return true;
+            }
+            return false;
+        }.bind(this), 3000);
+
+        return hidden;
+    }
+
     async clickCartButton() {
         const cartButton = await this.el_cartButton();
 
@@ -162,7 +187,6 @@ export class ProductPage {
     }
 
     async addProductByTitle(productText) {
-        //sprawdzam index produktu
         const productNames = await this.el_productNames();
 
         const productNameTexts = [];
@@ -170,10 +194,10 @@ export class ProductPage {
         {
             productNameTexts.push( await productNames[i].getText() );
         }
+
         const indexOfProductName = productNameTexts.indexOf(productText);
         const addButtons = await this.el_addButtons();
         
-        //ten index podaje do klikniecia buttona add
         return  addButtons[indexOfProductName].click()
     }
 
